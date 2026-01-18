@@ -2,40 +2,84 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Glint</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glint Browser</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/reviews.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
   <div class="browser">
     <div class="browser-header">
       <div class="tabs">
-        <div class="tab active">
-          <img src="images/logo.png" class="tab-logo">
-          <span>New Tab</span>
-          <span class="tab-close">×</span>
+        <div class="tab active" data-tab-id="newtab">
+          <div class="tab-favicon-placeholder">
+            <img src="images/logo.png" alt="Glint Logo" class="tab-logo">
+          </div>
+          <span class="tab-title">New Tab</span>
+          <span class="tab-close"><i class="fas fa-times"></i></span>
         </div>
-        <div class="new-tab-btn">+</div>
+        <div class="new-tab-btn"><i class="fas fa-plus"></i></div>
       </div>
     </div>
+
     <div class="toolbar">
-      <button>←</button><button>→</button><button>⟳</button>
-      <input class="address-bar-input" placeholder="Search or enter a URL">
-      <button>⋮</button>
+      <div class="navigation-controls">
+        <button class="nav-btn back-btn" aria-label="Go back"><i class="fas fa-arrow-left"></i></button>
+        <button class="nav-btn forward-btn" aria-label="Go forward"><i class="fas fa-arrow-right"></i></button>
+        <button class="nav-btn reload-btn" aria-label="Reload page"><i class="fas fa-redo"></i></button>
+      </div>
+      <div class="address-bar-container">
+        <span class="address-bar-lock"><i class="fas fa-lock"></i></span>
+        <input type="text" class="address-bar-input" placeholder="Search or enter a URL">
+      </div>
+      <div class="toolbar-actions">
+        <button class="action-btn menu-btn" aria-label="More options"><i class="fas fa-ellipsis-v"></i></button>
+      </div>
     </div>
+
     <div class="browser-content">
       <div class="new-tab-page">
-        <img src="images/logo.png" class="main-logo">
-        <input class="main-search-input" placeholder="Search or enter a site URL">
-        <p>Glint proxy</p>
+        <div class="new-tab-container">
+          <div class="hero-section">
+            <div class="logo-container">
+              <img src="images/logo.png" alt="Glint Logo" class="main-logo">
+            </div>
+            <div class="search-container">
+              <div class="search-bar">
+                <div class="search-icon"><i class="fas fa-search"></i></div>
+                <input type="text" class="main-search-input" placeholder="Search or enter a site URL">
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <p>Developed by Hydra Network</p>
+          </div>
+        </div>
       </div>
+      <div id="proxy-frames-container"></div>
     </div>
   </div>
 
-  <!-- All your JS files -->
+  <!-- All your JS files in correct order -->
+  <script src="js/utils/url-utils.js"></script>
+  <script src="js/utils/favicon.js"></script>
+  <script src="js/utils/proxy-frames.js"></script>
+  <script src="js/tabs/tab-history.js"></script>
+  <script src="js/tabs/tab-storage.js"></script>
+  <script src="js/tabs/tab-dragging.js"></script>
+  <script src="js/tabs/tab-management.js"></script>
+  <script src="js/navigation/navigation.js"></script>
   <script src="js/main.js"></script>
   <script src="js/search.js"></script>
   <script src="js/proxy-config.js"></script>
-  <script src="js/navigation.js"></script>
+  <script src="js/options.js"></script>
+  <script src="js/register-sw.js"></script>
+  <script src="js/reviews-carousel.js"></script>
+
+  <!-- Proxy engines -->
+  <script src="baremux/index.js"></script>
+  <script src="epoxy/index.js"></script>
 </body>
 </html>
