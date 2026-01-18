@@ -205,7 +205,7 @@
     <!-- Header -->
     <header class="header">
         <div class="logo">
-            <div class="logo-circle">✼</div>
+            <div class="logo-circle">ζ͜͡𝕲𝖍𝖔𝖘𝖙</div>
             <span>omnisearch</span>
         </div>
         <button class="dark-toggle" onclick="toggleDarkMode()">🌕</button>
@@ -234,49 +234,30 @@
         Powered by DuckDuckGo
     </div>
 
-    <!-- BULLETPROOF UNBLOCKER - Works even if DDG blocked -->
+    <!-- SAME TAB UNBLOCKER - Works even if DDG blocked -->
     <script>
-        // Multiple fallback proxies + direct URLs
+        // Unblockers that work in SAME TAB
         const unblockers = [
-            // Direct first (fastest if not blocked)
-            url => `https://duckduckgo.com/?q=${encodeURIComponent(url)}`,
-            // Google fallback  
-            url => `https://www.google.com/search?q=${encodeURIComponent(url)}`,
-            // Startpage (privacy-focused)
-            url => `https://www.startpage.com/do/search?q=${encodeURIComponent(url)}`,
-            // Working CORS proxies
-            url => `https://api.allorigins.win/raw?url=https://duckduckgo.com/?q=${encodeURIComponent(url)}`,
-            url => `https://corsproxy.io/?${encodeURIComponent(`https://duckduckgo.com/?q=${encodeURIComponent(url)}`)}`
+            // Working proxy services (direct HTML)
+            query => `https://duckduckgo.com/?q=${encodeURIComponent(query)}`,
+            query => `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+            query => `https://www.startpage.com/do/search?q=${encodeURIComponent(query)}`,
+            query => `https://search.brave.com/search?q=${encodeURIComponent(query)}`,
+            // Proxy mirrors
+            query => `https://htmlweb.io/proxy/${encodeURIComponent(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`)}`
         ];
         
         function performSearch() {
             const query = document.getElementById('searchInput').value.trim();
             if (!query) return;
             
-            // Try each unblocker until one works (in new tab)
-            let attempts = 0;
-            const tryNext = () => {
-                if (attempts >= unblockers.length) {
-                    alert('All services temporarily unavailable. Try again.');
-                    return;
-                }
-                
-                const proxyUrl = unblockers[attempts](query);
-                window.open(proxyUrl, '_blank', 'noopener,noreferrer');
-                attempts++;
-            };
-            
-            tryNext();
+            // Replace SAME TAB with first working unblocker
+            window.location.href = unblockers[0](query);
             
             // Visual feedback
             const input = document.getElementById('searchInput');
             input.style.transform = 'scale(0.97)';
-            input.placeholder = 'Opening search...';
-            setTimeout(() => {
-                input.placeholder = 'Search Omnisearch or type a URL';
-                input.style.transform = '';
-                input.value = '';
-            }, 1200);
+            input.placeholder = 'Loading search...';
         }
         
         function handleSearch(event) {
@@ -308,4 +289,3 @@
     </script>
 </body>
 </html>
-
