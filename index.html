@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="OmniSearch - Privacy-focused search that bypasses blocks">
-    <meta name="keywords" content="omnisearch, search, unblock, privacy">
+    <meta name="description" content="Privacy-focused search that bypasses blocks">
+    <meta name="keywords" content="search, unblock, privacy">
     <link rel="canonical" href="https://ublocked-potato.github.io/glint-proxy/">
     
     <title>OmniSearch</title>
@@ -44,18 +44,9 @@
             backdrop-filter: blur(20px);
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             padding: 0 40px;
             z-index: 1000;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 28px;
-            font-weight: 800;
-            color: white;
-            cursor: pointer;
         }
         
         .logo-circle {
@@ -63,12 +54,12 @@
             height: 48px;
             border-radius: 50%;
             background: linear-gradient(135deg, #8a2be2, #9300ea);
-            margin-right: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             box-shadow: 0 0 30px rgba(138,43,226,0.6);
+            cursor: pointer;
         }
         
         .dark-toggle {
@@ -85,6 +76,7 @@
             font-size: 24px;
             backdrop-filter: blur(10px);
             transition: all 0.3s;
+            margin-left: 15px;
         }
         
         .dark-toggle:hover {
@@ -202,12 +194,9 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header - Logo text REMOVED -->
     <header class="header">
-        <div class="logo">
-            <div class="logo-circle">ζ͜͡𝕲𝖍𝖔𝖘𝖙</div>
-            <span>omnisearch</span>
-        </div>
+        <div class="logo-circle" onclick="copyUrl()">ζ͜͡𝕲𝖍𝖔𝖘𝖙</div>
         <button class="dark-toggle" onclick="toggleDarkMode()">🌕</button>
     </header>
 
@@ -234,30 +223,14 @@
         Powered by DuckDuckGo
     </div>
 
-    <!-- SAME TAB UNBLOCKER - Works even if DDG blocked -->
+    <!-- SAME TAB SEARCH -->
     <script>
-        // Unblockers that work in SAME TAB
-        const unblockers = [
-            // Working proxy services (direct HTML)
-            query => `https://duckduckgo.com/?q=${encodeURIComponent(query)}`,
-            query => `https://www.google.com/search?q=${encodeURIComponent(query)}`,
-            query => `https://www.startpage.com/do/search?q=${encodeURIComponent(query)}`,
-            query => `https://search.brave.com/search?q=${encodeURIComponent(query)}`,
-            // Proxy mirrors
-            query => `https://htmlweb.io/proxy/${encodeURIComponent(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`)}`
-        ];
-        
         function performSearch() {
             const query = document.getElementById('searchInput').value.trim();
             if (!query) return;
             
-            // Replace SAME TAB with first working unblocker
-            window.location.href = unblockers[0](query);
-            
-            // Visual feedback
-            const input = document.getElementById('searchInput');
-            input.style.transform = 'scale(0.97)';
-            input.placeholder = 'Loading search...';
+            // SAME TAB - Direct DuckDuckGo
+            window.location.replace(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`);
         }
         
         function handleSearch(event) {
@@ -277,15 +250,15 @@
             document.querySelector('.dark-toggle').textContent = '🌑';
         }
         
-        // COPY URL
-        document.querySelector('.logo').addEventListener('click', () => {
+        // COPY URL (click logo circle)
+        function copyUrl() {
             navigator.clipboard.writeText(window.location.href).then(() => {
-                const logoText = document.querySelector('.logo span');
-                const original = logoText.textContent;
-                logoText.textContent = 'Copied!';
-                setTimeout(() => logoText.textContent = original, 1500);
+                const circle = document.querySelector('.logo-circle');
+                const original = circle.innerHTML;
+                circle.innerHTML = '✅';
+                setTimeout(() => circle.innerHTML = 'ζ͜͡𝕲𝖍𝖔𝖘𝖙', 1500);
             });
-        });
+        }
     </script>
 </body>
 </html>
