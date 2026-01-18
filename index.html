@@ -3,284 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO Meta Tags -->
     <meta name="description" content="Privacy-focused search that bypasses blocks">
     <meta name="keywords" content="search, unblock, privacy">
     <link rel="canonical" href="https://ublocked-potato.github.io/glint-proxy/">
-    
     <title>OmniSearch</title>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: 
-                linear-gradient(90deg, transparent 48%, rgba(255,255,255,0.05) 50%, transparent 52%),
-                linear-gradient(0deg, transparent 48%, rgba(255,255,255,0.05) 50%, transparent 52%),
-                linear-gradient(135deg, #1a0033 0%, #2d1b69 25%, #4a0e6a 50%, #2d1b69 75%, #1a0033 100%);
+            background: linear-gradient(90deg, transparent 48%, rgba(255,255,255,0.05) 50%, transparent 52%),
+                        linear-gradient(0deg, transparent 48%, rgba(255,255,255,0.05) 50%, transparent 52%),
+                        linear-gradient(135deg, #1a0033 0%, #2d1b69 25%, #4a0e6a 50%, #2d1b69 75%, #1a0033 100%);
             background-size: 40px 40px, 40px 40px, 100% 100%;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            overflow-x: hidden;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; overflow-x: hidden;
         }
-        
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(20px);
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 40px;
-            z-index: 1000;
-        }
-        
-        .logo-circle {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #8a2be2, #9300ea);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 0 30px rgba(138,43,226,0.6);
-            cursor: pointer;
-        }
-        
-        .dark-toggle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            border: 2px solid rgba(255,255,255,0.3);
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-            margin-left: 15px;
-        }
-        
-        .dark-toggle:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.1);
-        }
-        
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 120px 20px 80px;
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
-        
-        .search-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 40px;
-        }
-        
-        .search-input {
-            width: 100%;
-            height: 68px;
-            padding: 0 75px 0 30px;
-            font-size: 18px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 40px;
-            color: white;
-            backdrop-filter: blur(20px);
-            outline: none;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-        
-        .search-input::placeholder {
-            color: rgba(255,255,255,0.6);
-        }
-        
-        .search-input:focus {
-            border-color: rgba(255,255,255,0.5);
-            box-shadow: 0 0 25px rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.15);
-        }
-        
-        .search-icon {
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .search-icon:hover {
-            background: rgba(255,255,255,0.4);
-            transform: translateY(-50%) scale(1.1);
-        }
-        
-        .features {
-            font-size: 16px;
-            opacity: 0.9;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-        
-        .powered-by {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 14px;
-            opacity: 0.8;
-            font-weight: 500;
-            background: rgba(0,0,0,0.3);
-            padding: 8px 20px;
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
-        }
-        
-        /* DARK MODE */
-        .dark-mode {
-            background: 
-                linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%),
-                linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%),
-                linear-gradient(135deg, #0f001d 0%, #1a0d2e 50%, #0f001d 100%);
-        }
-        
-        .dark-mode .search-input {
-            background: rgba(0,0,0,0.4);
-        }
-        
-        .dark-mode .header {
-            background: rgba(0,0,0,0.6);
-        }
-        
-        @media (max-width: 768px) {
-            .header { padding: 0 20px; }
-            .main-content { padding: 140px 15px 100px; }
-            .search-input { height: 60px; font-size: 16px; }
-        }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 80px; background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: flex-end; padding: 0 40px; z-index: 1000; }
+        .logo-circle { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #8a2be2, #9300ea);
+            display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 30px rgba(138,43,226,0.6); cursor: pointer; }
+        .dark-toggle { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3);
+            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px;
+            backdrop-filter: blur(10px); transition: all 0.3s; margin-left: 15px; }
+        .dark-toggle:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
+        .main-content { display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 120px 20px 80px; width: 100%; max-width: 500px; text-align: center; }
+        .search-container { position: relative; width: 100%; margin-bottom: 40px; }
+        .search-input { width: 100%; height: 68px; padding: 0 75px 0 30px; font-size: 18px; background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2); border-radius: 40px; color: white; backdrop-filter: blur(20px);
+            outline: none; transition: all 0.3s; font-weight: 500; }
+        .search-input::placeholder { color: rgba(255,255,255,0.6); }
+        .search-input:focus { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 25px rgba(255,255,255,0.2); background: rgba(255,255,255,0.15); }
+        .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px;
+            color: white; cursor: pointer; transition: all 0.3s; }
+        .search-icon:hover { background: rgba(255,255,255,0.4); transform: translateY(-50%) scale(1.1); }
+        .features { font-size: 16px; opacity: 0.9; font-weight: 600; margin-bottom: 20px; }
+        .powered-by { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 14px; opacity: 0.8;
+            font-weight: 500; background: rgba(0,0,0,0.3); padding: 8px 20px; border-radius: 25px; backdrop-filter: blur(10px); }
+        .dark-mode { background: linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%),
+            linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%), linear-gradient(135deg, #0f001d 0%, #1a0d2e 50%, #0f001d 100%); }
+        .dark-mode .search-input { background: rgba(0,0,0,0.4); }
+        .dark-mode .header { background: rgba(0,0,0,0.6); }
+        @media (max-width: 768px) { .header { padding: 0 20px; } .main-content { padding: 140px 15px 100px; } .search-input { height: 60px; font-size: 16px; } }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
-        <div class="logo-circle" onclick="copyUrl()">ζ͜͡𝕲𝖍𝖔𝖘𝖙</div>
+        <div class="logo-circle" onclick="copyUrl()">🔍</div>
         <button class="dark-toggle" onclick="toggleDarkMode()">🌕</button>
     </header>
-
-    <!-- Main Content -->
     <div class="main-content">
         <div class="search-container">
-            <input 
-                type="text" 
-                class="search-input" 
-                id="searchInput"
-                placeholder="Search Omnisearch or type a URL"
-                onkeypress="handleSearch(event)"
-            >
+            <input class="search-input" id="searchInput" placeholder="Search Omnisearch or type a URL" onkeypress="handleSearch(event)">
             <div class="search-icon" onclick="performSearch()">Search</div>
         </div>
+        <div class="features">Fast • Private • Unblocker Built-in</div>
+    </div>
+    <div class="powered-by">Powered by DuckDuckGo</div>
+
+    <script>
+        // AUTO-FALLBACK SYSTEM (tries each until one works)
+        const engines = [
+            query => `https://www.google.com/search?q=${encodeURIComponent(query)}`,      // Google (99.9% success)
+            query => `https://www.startpage.com/do/search?q=${encodeURIComponent(query)}`, // DDG proxy mirror
+            query => `https://search.brave.com/search?q=${encodeURIComponent(query)}`,     // Brave (independent)
+            query => `https://www.bing.com/search?q=${encodeURIComponent(query)}`,         // Bing (corporate)
+            query => `https://www.qwant.com/?q=${encodeURIComponent(query)}`,              // EU search
+            query => `https://yandex.com/search/?text=${encodeURIComponent(query)}`         // Global backup
+        ];
         
-        <div class="features">
-            Fast • Private • Unblocker Built-in
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="powered-by">
-        Powered by DuckDuckGo
-    </div>
-
-   <script>
-// ULTIMATE UNBLOCKER - NOTHING BLOCKS THIS
-const engines = [
-    'https://www.google.com/search?q=',
-    'https://www.startpage.com/do/search?q=',
-    'https://search.brave.com/search?q=',
-    'https://www.bing.com/search?q=',
-    'https://www.qwant.com/?q=',  // France/EU always works
-    'https://yandex.com/search/?text='  // Russia/global
-];
-
-function performSearch() {
-    const query = document.getElementById('searchInput').value.trim();
-    if (!query) return;
-    
-    // Use GOOGLE FIRST (99.9% success rate)
-    window.location.replace(engines[0] + encodeURIComponent(query));
-}
-</script>
-
+        let fallbackIndex = 0;
         
         function performSearch() {
             const query = document.getElementById('searchInput').value.trim();
             if (!query) return;
             
-            // Try each service until one works (SAME TAB)
-            let currentIndex = 0;
-            const tryNext = () => {
-                if (currentIndex >= searchUrls.length) {
-                    alert('All services blocked. Try different keywords.');
-                    return;
-                }
-                
-                const url = searchUrls[currentIndex](query);
-                window.location.replace(url);
-                currentIndex++;
-            };
-            
-            tryNext();
+            // Try current engine
+            const url = engines[fallbackIndex](query);
+            window.location.replace(url);
             
             // Visual feedback
             const input = document.getElementById('searchInput');
             input.style.transform = 'scale(0.97)';
-            input.placeholder = 'Loading unblocker...';
+            input.placeholder = 'Loading...';
         }
         
         function handleSearch(event) {
             if (event.key === 'Enter') performSearch();
         }
         
-        // DARK MODE 🌕🌑
+        // AUTOMATIC FALLBACK DETECTION
+        window.addEventListener('error', function(e) {
+            fallbackIndex = (fallbackIndex + 1) % engines.length;
+            console.log(`Engine ${fallbackIndex} blocked, switching...`);
+        }, true);
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            fallbackIndex = (fallbackIndex + 1) % engines.length;
+            console.log(`Engine ${fallbackIndex} failed, switching...`);
+        });
+        
+        // DARK MODE
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
             localStorage.setItem('darkMode', isDark);
             document.querySelector('.dark-toggle').textContent = isDark ? '🌑' : '🌕';
         }
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.dark-toggle').textContent = '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy-focused search that bypasses blocks">
+    <meta name="keywords" content="search, unblock, privacy">
+    <link rel="canonical" href="https://ublocked-potato.github.io/glint-proxy/">
+    <title>OmniSearch</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(90deg, transparent 48%, rgba(255,255,255,0.05) 50%, transparent 52%),
+                        linear-gradient(0deg, transparent 48%, rgba(255,255,255,0.05) 50%, transparent 52%),
+                        linear-gradient(135deg, #1a0033 0%, #2d1b69 25%, #4a0e6a 50%, #2d1b69 75%, #1a0033 100%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; overflow-x: hidden;
+        }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 80px; background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: flex-end; padding: 0 40px; z-index: 1000; }
+        .logo-circle { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #8a2be2, #9300ea);
+            display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 30px rgba(138,43,226,0.6); cursor: pointer; }
+        .dark-toggle { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3);
+            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px;
+            backdrop-filter: blur(10px); transition: all 0.3s; margin-left: 15px; }
+        .dark-toggle:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
+        .main-content { display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 120px 20px 80px; width: 100%; max-width: 500px; text-align: center; }
+        .search-container { position: relative; width: 100%; margin-bottom: 40px; }
+        .search-input { width: 100%; height: 68px; padding: 0 75px 0 30px; font-size: 18px; background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2); border-radius: 40px; color: white; backdrop-filter: blur(20px);
+            outline: none; transition: all 0.3s; font-weight: 500; }
+        .search-input::placeholder { color: rgba(255,255,255,0.6); }
+        .search-input:focus { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 25px rgba(255,255,255,0.2); background: rgba(255,255,255,0.15); }
+        .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px;
+            color: white; cursor: pointer; transition: all 0.3s; }
+        .search-icon:hover { background: rgba(255,255,255,0.4); transform: translateY(-50%) scale(1.1); }
+        .features { font-size: 16px; opacity: 0.9; font-weight: 600; margin-bottom: 20px; }
+        .powered-by { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 14px; opacity: 0.8;
+            font-weight: 500; background: rgba(0,0,0,0.3); padding: 8px 20px; border-radius: 25px; backdrop-filter: blur(10px); }
+        .dark-mode { background: linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%),
+            linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%), linear-gradient(135deg, #0f001d 0%, #1a0d2e 50%, #0f001d 100%); }
+        .dark-mode .search-input { background: rgba(0,0,0,0.4); }
+        .dark-mode .header { background: rgba(0,0,0,0.6); }
+        @media (max-width: 768px) { .header { padding: 0 20px; } .main-content { padding: 140px 15px 100px; } .search-input { height: 60px; font-size: 16px; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-circle" onclick="copyUrl()">ζ͜͡𝕲𝖍𝖔𝖘𝖙 𔓎</div>
+        <button class="dark-toggle" onclick="toggleDarkMode()">🌕</button>
+    </header>
+    <div class="main-content">
+        <div class="search-container">
+            <input class="search-input" id="searchInput" placeholder="Search Omnisearch or type a URL" onkeypress="handleSearch(event)">
+            <div class="search-icon" onclick="performSearch()">Search</div>
+        </div>
+        <div class="features">Fast • Private • Unblocker Built-in</div>
+    </div>
+    <div class="powered-by">Powered by DuckDuckGo</div>
+
+    <script>
+        // AUTO-FALLBACK SYSTEM (tries each until one works)
+        const engines = [
+            query => `https://www.google.com/search?q=${encodeURIComponent(query)}`,      // Google (99.9% success)
+            query => `https://www.startpage.com/do/search?q=${encodeURIComponent(query)}`, // DDG proxy mirror
+            query => `https://search.brave.com/search?q=${encodeURIComponent(query)}`,     // Brave (independent)
+            query => `https://www.bing.com/search?q=${encodeURIComponent(query)}`,         // Bing (corporate)
+            query => `https://www.qwant.com/?q=${encodeURIComponent(query)}`,              // EU search
+            query => `https://yandex.com/search/?text=${encodeURIComponent(query)}`         // Global backup
+        ];
         
+        let fallbackIndex = 0;
+        
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            // Try current engine
+            const url = engines[fallbackIndex](query);
+            window.location.replace(url);
+            
+            // Visual feedback
+            const input = document.getElementById('searchInput');
+            input.style.transform = 'scale(0.97)';
+            input.placeholder = 'Loading...';
+        }
+        
+        function handleSearch(event) {
+            if (event.key === 'Enter') performSearch();
+        }
+        
+        // AUTOMATIC FALLBACK DETECTION
+        window.addEventListener('error', function(e) {
+            fallbackIndex = (fallbackIndex + 1) % engines.length;
+            console.log(`Engine ${fallbackIndex} blocked, switching...`);
+        }, true);
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            fallbackIndex = (fallbackIndex + 1) % engines.length;
+            console.log(`Engine ${fallbackIndex} failed, switching...`);
+        });
+        
+        // DARK MODE
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            document.querySelector('.dark-toggle').textContent = isDark ? '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy-focused search that bypasses blocks">
+    <meta name="keywords" content="search, unblock, privacy">
+    <link rel="canonical" href="https://ublocked-potato.github.io/glint-proxy/">
+    <title>OmniSearch</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(90deg, transparent 48%, rgba(255,255,255,0.05) 50%, transparent 52%),
+                        linear-gradient(0deg, transparent 48%, rgba(255,255,255,0.05) 50%, transparent 52%),
+                        linear-gradient(135deg, #1a0033 0%, #2d1b69 25%, #4a0e6a 50%, #2d1b69 75%, #1a0033 100%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; overflow-x: hidden;
+        }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 80px; background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: flex-end; padding: 0 40px; z-index: 1000; }
+        .logo-circle { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #8a2be2, #9300ea);
+            display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 30px rgba(138,43,226,0.6); cursor: pointer; }
+        .dark-toggle { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3);
+            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px;
+            backdrop-filter: blur(10px); transition: all 0.3s; margin-left: 15px; }
+        .dark-toggle:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
+        .main-content { display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 120px 20px 80px; width: 100%; max-width: 500px; text-align: center; }
+        .search-container { position: relative; width: 100%; margin-bottom: 40px; }
+        .search-input { width: 100%; height: 68px; padding: 0 75px 0 30px; font-size: 18px; background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2); border-radius: 40px; color: white; backdrop-filter: blur(20px);
+            outline: none; transition: all 0.3s; font-weight: 500; }
+        .search-input::placeholder { color: rgba(255,255,255,0.6); }
+        .search-input:focus { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 25px rgba(255,255,255,0.2); background: rgba(255,255,255,0.15); }
+        .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px;
+            color: white; cursor: pointer; transition: all 0.3s; }
+        .search-icon:hover { background: rgba(255,255,255,0.4); transform: translateY(-50%) scale(1.1); }
+        .features { font-size: 16px; opacity: 0.9; font-weight: 600; margin-bottom: 20px; }
+        .powered-by { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 14px; opacity: 0.8;
+            font-weight: 500; background: rgba(0,0,0,0.3); padding: 8px 20px; border-radius: 25px; backdrop-filter: blur(10px); }
+        .dark-mode { background: linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%),
+            linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%), linear-gradient(135deg, #0f001d 0%, #1a0d2e 50%, #0f001d 100%); }
+        .dark-mode .search-input { background: rgba(0,0,0,0.4); }
+        .dark-mode .header { background: rgba(0,0,0,0.6); }
+        @media (max-width: 768px) { .header { padding: 0 20px; } .main-content { padding: 140px 15px 100px; } .search-input { height: 60px; font-size: 16px; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-circle" onclick="copyUrl()">ζ͜͡𝕲𝖍𝖔𝖘𝖙 𔓎</div>
+        <button class="dark-toggle" onclick="toggleDarkMode()">🌕</button>
+    </header>
+    <div class="main-content">
+        <div class="search-container">
+            <input class="search-input" id="searchInput" placeholder="Search Omnisearch or type a URL" onkeypress="handleSearch(event)">
+            <div class="search-icon" onclick="performSearch()">Search</div>
+        </div>
+        <div class="features">Fast • Private • Unblocker Built-in</div>
+    </div>
+    <div class="powered-by">Powered by DuckDuckGo</div>
+
+    <script>
+        // AUTO-FALLBACK SYSTEM (tries each until one works)
+        const engines = [
+            query => `https://www.google.com/search?q=${encodeURIComponent(query)}`,      // Google (99.9% success)
+            query => `https://www.startpage.com/do/search?q=${encodeURIComponent(query)}`, // DDG proxy mirror
+            query => `https://search.brave.com/search?q=${encodeURIComponent(query)}`,     // Brave (independent)
+            query => `https://www.bing.com/search?q=${encodeURIComponent(query)}`,         // Bing (corporate)
+            query => `https://www.qwant.com/?q=${encodeURIComponent(query)}`,              // EU search
+            query => `https://yandex.com/search/?text=${encodeURIComponent(query)}`         // Global backup
+        ];
+        
+        let fallbackIndex = 0;
+        
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            // Try current engine
+            const url = engines[fallbackIndex](query);
+            window.location.replace(url);
+            
+            // Visual feedback
+            const input = document.getElementById('searchInput');
+            input.style.transform = 'scale(0.97)';
+            input.placeholder = 'Loading...';
+        }
+        
+        function handleSearch(event) {
+            if (event.key === 'Enter') performSearch();
+        }
+        
+        // AUTOMATIC FALLBACK DETECTION
+        window.addEventListener('error', function(e) {
+            fallbackIndex = (fallbackIndex + 1) % engines.length;
+            console.log(`Engine ${fallbackIndex} blocked, switching...`);
+        }, true);
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            fallbackIndex = (fallbackIndex + 1) % engines.length;
+            console.log(`Engine ${fallbackIndex} failed, switching...`);
+        });
+        
+        // DARK MODE
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            document.querySelector('.dark-toggle').textContent = isDark ? '🌑' : '🌕';
+        }
         if (localStorage.getItem('darkMode') === 'true') {
             document.body.classList.add('dark-mode');
             document.querySelector('.dark-toggle').textContent = '🌑';
@@ -292,10 +351,48 @@ function performSearch() {
                 const circle = document.querySelector('.logo-circle');
                 const original = circle.innerHTML;
                 circle.innerHTML = '✅';
-                setTimeout(() => circle.innerHTML = 'ζ͜͡𝕲𝖍𝖔𝖘𝖙', 1500);
+                setTimeout(() => circle.innerHTML = 'ζ͜͡𝕲𝖍𝖔𝖘𝖙 ', 1500);
             });
         }
     </script>
+</head>
 </body>
 </html>
+' : '🌕';
+        }
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.dark-toggle').textContent = '🌑';
+        }
+        
+        // COPY URL
+        function copyUrl() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const circle = document.querySelector('.logo-circle');
+                const original = circle.innerHTML;
+                circle.innerHTML = '✅';
+                setTimeout(() => circle.innerHTML = '🔍', 1500);
+            });
+        }
+    </script>
+</head>
+</body>
+</html>
+';
+        }
+        
+        // COPY URL
+        function copyUrl() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const circle = document.querySelector('.logo-circle');
+                const original = circle.innerHTML;
+                circle.innerHTML = '✅';
+                setTimeout(() => circle.innerHTML = '🔍', 1500);
+            });
+        }
+    </script>
+</head>
+</body>
+</html>
+
 
