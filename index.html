@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Privacy-focused search that bypasses blocks">
-    <meta name="keywords" content="search, unblock, privacy">
-    <link rel="canonical" href="https://ublocked-potato.github.io/glint-proxy/">
     <title>OmniSearch</title>
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -24,29 +20,20 @@
         .logo-circle { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #8a2be2, #9300ea);
             display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 30px rgba(138,43,226,0.6); cursor: pointer; }
         .dark-toggle { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3);
-            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px;
-            backdrop-filter: blur(10px); transition: all 0.3s; margin-left: 15px; }
-        .dark-toggle:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
+            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-left: 15px; }
         .main-content { display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 120px 20px 80px; width: 100%; max-width: 500px; text-align: center; }
+            padding: 120px 20px 80px; width: 100%; max-width: 500px; }
         .search-container { position: relative; width: 100%; margin-bottom: 40px; }
         .search-input { width: 100%; height: 68px; padding: 0 75px 0 30px; font-size: 18px; background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2); border-radius: 40px; color: white; backdrop-filter: blur(20px);
-            outline: none; transition: all 0.3s; font-weight: 500; }
-        .search-input::placeholder { color: rgba(255,255,255,0.6); }
-        .search-input:focus { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 25px rgba(255,255,255,0.2); background: rgba(255,255,255,0.15); }
+            border: 2px solid rgba(255,255,255,0.2); border-radius: 40px; color: white; backdrop-filter: blur(20px); outline: none; }
         .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%;
-            background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px;
-            color: white; cursor: pointer; transition: all 0.3s; }
-        .search-icon:hover { background: rgba(255,255,255,0.4); transform: translateY(-50%) scale(1.1); }
-        .features { font-size: 16px; opacity: 0.9; font-weight: 600; margin-bottom: 20px; }
+            background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; color: white; cursor: pointer; }
         .powered-by { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 14px; opacity: 0.8;
-            font-weight: 500; background: rgba(0,0,0,0.3); padding: 8px 20px; border-radius: 25px; backdrop-filter: blur(10px); }
+            background: rgba(0,0,0,0.3); padding: 8px 20px; border-radius: 25px; backdrop-filter: blur(10px); }
         .dark-mode { background: linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%),
             linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.1) 50%, transparent 52%), linear-gradient(135deg, #0f001d 0%, #1a0d2e 50%, #0f001d 100%); }
         .dark-mode .search-input { background: rgba(0,0,0,0.4); }
         .dark-mode .header { background: rgba(0,0,0,0.6); }
-        @media (max-width: 768px) { .header { padding: 0 20px; } .main-content { padding: 140px 15px 100px; } .search-input { height: 60px; font-size: 16px; } }
     </style>
 </head>
 <body>
@@ -54,79 +41,46 @@
         <div class="logo-circle" onclick="copyUrl()">ζ͜͡𝕲𝖍𝖔𝖘𝖙</div>
         <button class="dark-toggle" onclick="toggleDarkMode()">🌕</button>
     </header>
+    
     <div class="main-content">
         <div class="search-container">
-            <input class="search-input" id="searchInput" placeholder="Search Omnisearch or type a URL" onkeypress="handleSearch(event)">
+            <input class="search-input" id="searchInput" placeholder="Search or enter URL" onkeypress="handleSearch(event)">
             <div class="search-icon" onclick="performSearch()">Search</div>
         </div>
-        <div class="features">Fast • Private • Unblocker Built-in</div>
     </div>
-    <div class="powered-by">Powered by DuckDuckGo</div>
+    
+    <div class="powered-by">Powered by Glint</div>
 
     <script>
-        // AUTO-FALLBACK SYSTEM (tries each until one works)
-        const engines = [
-            query => `https://www.google.com/search?q=${encodeURIComponent(query)}`,      // Google (99.9% success)
-            query => `https://www.startpage.com/do/search?q=${encodeURIComponent(query)}`, // DDG proxy mirror
-            query => `https://search.brave.com/search?q=${encodeURIComponent(query)}`,     // Brave (independent)
-            query => `https://www.bing.com/search?q=${encodeURIComponent(query)}`,         // Bing (corporate)
-            query => `https://www.qwant.com/?q=${encodeURIComponent(query)}`,              // EU search
-            query => `https://yandex.com/search/?text=${encodeURIComponent(query)}`         // Global backup
-        ];
-        
-        let fallbackIndex = 0;
-        
         function performSearch() {
             const query = document.getElementById('searchInput').value.trim();
             if (!query) return;
             
-            // Try current engine
-            const url = engines[fallbackIndex](query);
-            window.location.replace(url);
-            
-            // Visual feedback
-            const input = document.getElementById('searchInput');
-            input.style.transform = 'scale(0.97)';
-            input.placeholder = 'Loading...';
+            // GLINT PROXY - Stays in SAME TAB, uses Glint's proxy system
+            window.location.replace(`https://glintapp.org/#/${encodeURIComponent(query)}`);
         }
         
         function handleSearch(event) {
             if (event.key === 'Enter') performSearch();
         }
         
-        // AUTOMATIC FALLBACK DETECTION
-        window.addEventListener('error', function(e) {
-            fallbackIndex = (fallbackIndex + 1) % engines.length;
-            console.log(`Engine ${fallbackIndex} blocked, switching...`);
-        }, true);
-        
-        window.addEventListener('unhandledrejection', function(e) {
-            fallbackIndex = (fallbackIndex + 1) % engines.length;
-            console.log(`Engine ${fallbackIndex} failed, switching...`);
-        });
-        
-        // DARK MODE
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('darkMode', isDark);
-            document.querySelector('.dark-toggle').textContent = isDark ? '🌑' : '🌕';
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            document.querySelector('.dark-toggle').textContent = document.body.classList.contains('dark-mode') ? '🌑' : '🌕';
         }
+        
         if (localStorage.getItem('darkMode') === 'true') {
             document.body.classList.add('dark-mode');
             document.querySelector('.dark-toggle').textContent = '🌑';
         }
         
-        // COPY URL
         function copyUrl() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                const circle = document.querySelector('.logo-circle');
-                const original = circle.innerHTML;
-                circle.innerHTML = '✅';
-                setTimeout(() => circle.innerHTML = 'ζ͜͡𝕲𝖍𝖔𝖘𝖙 ', 1500);
-            });
+            navigator.clipboard.writeText(window.location.href);
+            const circle = document.querySelector('.logo-circle');
+            circle.innerHTML = '✅';
+            setTimeout(() => circle.innerHTML = 'ζ͜͡𝕲𝖍𝖔𝖘𝖙 ', 1000);
         }
     </script>
-</head>
 </body>
 </html>
